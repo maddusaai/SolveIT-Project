@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Online Judge</title>
+    <style>
+        /* Reset some basic styles */
+        body, h1, h2, h3, p, ul, li, a, table, th, td {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            text-decoration: none;
+            color: inherit;
+            border-spacing: 0;
+        }
+
+        /* Body and background */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: #176ca5;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+        }
+
+        .navbar .nav-links a {
+            color: white;
+            padding: 10px 20px;
+        }
+
+        /* Container for Welcome Message and Problems Solved */
+        .dashboard-and-welcome {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 20px;
+        }
+
+        /* Welcome Message */
+        .welcome-message {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            text-align: center;
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            background-color: #fff;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 50%;
+            text-align: center;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #f0f0f0; /* Thin border */
+        }
+
+        .dashboard h2 {
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+
+        .dashboard p {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Main content styles */
+        .main-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Table styles */
+        .problem-table {
+            width: 100%;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+
+        .problem-table th, .problem-table td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        .problem-table th {
+            background-color: #f0f0f0;
+        }
+
+        .problem-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<div class="navbar">
+    <div class="logo">SolveIt</div>
+    <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">Contests</a>
+        <a href="#">Problems</a>
+        <a href="/leaderboard">Leaderboard</a>
+        <a href="#">Profile</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<!-- Container for Welcome Message and Problems Solved -->
+<div class="dashboard-and-welcome">
+    <!-- Welcome Message -->
+    <div class="welcome-message">
+        <h1>Welcome {{user.username}}</h1>
+        <p>Explore contests, solve problems, and compete on the leaderboard.</p>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div class="dashboard">
+        <h2>Problems Solved</h2>
+        <p id="problems-count">{{nops}}</p>
+    </div>
+</div>
+
+<!-- Main Content Section -->
+<div class="main-content">
+    <table class="problem-table">
+        <thead>
+            <tr>
+                <th>Problem Name</th>
+                <th>Difficulty</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data_from_another_model %}
+                <tr>
+                    <td><a href="{% url 'problem_page' item.name %}">{{ item.name }}</a></td>
+                    <td>{{ item.difficulty }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
