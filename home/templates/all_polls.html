@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Online Judge</title>
+    <title>Dashboard</title>
     <style>
         /* Reset some basic styles */
         body, h1, h2, h3, p, ul, li, a, table, th, td {
@@ -17,25 +17,26 @@
 
         /* Body and background */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #ffebee; /* Changed background color */
+            color: #c62828; /* Changed text color */
             margin: 0;
             padding: 0;
         }
 
         /* Navbar styles */
         .navbar {
-            background-color: #176ca5;
+            background-color: #b71c1c; /* Changed navbar color */
             color: white;
-            padding: 10px 20px;
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .navbar .logo {
-            font-size: 1.5em;
+            font-size: 1.8em;
             font-weight: bold;
         }
 
@@ -45,7 +46,14 @@
 
         .navbar .nav-links a {
             color: white;
-            padding: 10px 20px;
+            padding: 10px 25px;
+            transition: background-color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .navbar .nav-links a:hover {
+            background-color: #c62828; /* Changed hover color */
+            border-radius: 5px;
         }
 
         /* Container for Welcome Message and Problems Solved */
@@ -53,72 +61,96 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin: 20px;
+            margin: 40px;
         }
 
         /* Welcome Message */
         .welcome-message {
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            text-align: center;
-            flex: 1;
-            margin-right: 10px;
+            background-color: #ffffff;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            flex: 2;
+            margin-right: 30px;
+            text-align: left;
+        }
+
+        .welcome-message h1 {
+            font-size: 1.5em;
+            color: #c62828; /* Changed header color */
+            margin-bottom: 10px;
+        }
+
+        .welcome-message p {
+            color: #d32f2f; /* Changed paragraph color */
         }
 
         /* Dashboard */
         .dashboard {
-            background-color: #fff;
+            background-color: #ffffff;
             padding: 30px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
             text-align: center;
-            width: 150px;
-            height: 150px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border: 2px solid #f0f0f0; /* Thin border */
+            width: 200px;
+            flex-shrink: 0;
         }
 
         .dashboard h2 {
             margin-top: 0;
             font-size: 1.2em;
+            color: #c62828; /* Changed header color */
         }
 
         .dashboard p {
-            font-size: 24px;
+            font-size: 2em;
             font-weight: bold;
+            color: #b71c1c; /* Changed text color */
         }
 
         /* Main content styles */
         .main-content {
-            padding: 20px;
+            padding: 20px 40px;
             text-align: center;
         }
 
         /* Table styles */
         .problem-table {
-            width: 100%;
-            margin-top: 20px;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-radius: 8px;
+            width: 60%;
+            margin: 20px auto;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
         }
 
         .problem-table th, .problem-table td {
-            padding: 10px;
+            padding: 15px;
             text-align: left;
         }
 
         .problem-table th {
-            background-color: #f0f0f0;
+            background-color: #ef9a9a; /* Changed header background color */
+            color: #c62828; /* Changed header text color */
+            font-weight: 600;
         }
 
         .problem-table tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #fbe9e7; /* Changed even row background color */
+        }
+
+        .problem-table tr:hover {
+            background-color: #ffccbc; /* Changed hover row background color */
+        }
+
+        .problem-table td a {
+            color: #b71c1c; /* Changed link color */
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .problem-table td a:hover {
+            color: #c62828; /* Changed link hover color */
         }
     </style>
 </head>
@@ -128,9 +160,6 @@
 <div class="navbar">
     <div class="logo">SolveIt</div>
     <div class="nav-links">
-        <a href="#">Home</a>
-        <a href="#">Contests</a>
-        <a href="#">Problems</a>
         <a href="/leaderboard">Leaderboard</a>
         <a href="#">Profile</a>
         <a href="/logout">Logout</a>

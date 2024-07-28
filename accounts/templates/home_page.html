@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SolveIt - Home</title>
     <style>
         /* Basic reset */
@@ -15,83 +16,141 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f5f5f5;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Container styles */
-        .container {
-            text-align: center;
-            background-color: #fff;
-            padding: 40px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+            color: #333;
         }
 
         /* Header styles */
-        .header h1 {
-            font-size: 48px;
-            color: #176ca5;
-            margin-bottom: 40px;
+        header {
+            background-color: #d2121b;
+            color: white;
+            padding: 20px 0;
         }
 
-        /* Main content styles */
-        .main-content {
+        /* Navigation styles */
+        nav {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
+            padding: 0 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        /* Button container styles */
-        .button-container {
+        .nav-left {
+            font-size: 24px;
+        }
+
+        .nav-right {
             display: flex;
-            flex-direction: column;
             gap: 20px;
         }
 
-        /* Button styles */
-        .button {
-            display: block;
-            width: 200px;
-            padding: 15px;
-            text-align: center;
-            background-color: #176ca5;
+        .nav-right a {
             color: white;
             text-decoration: none;
             font-size: 18px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
         }
 
-        .button:hover {
-            background-color: #145b8a;
+        .nav-right a:hover {
+            text-decoration: underline;
         }
 
-        /* Responsive design */
-        @media (min-width: 768px) {
-            .button-container {
-                flex-direction: row;
-            }
+        /* Main content styles */
+        main {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-            .button {
-                margin: 0 10px;
-            }
+        /* Section styles */
+        section {
+            margin-bottom: 40px;
+        }
+
+        .features {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .feature {
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        /* Testimonials styles */
+        .testimonials {
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .testimonial {
+            margin-bottom: 20px;
+        }
+
+        /* Footer styles */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1>SolveIt</h1>
-        </header>
-        <main class="main-content">
-            <div class="button-container">
-                
-                <a href="{% url 'login-user' %}" class="button">Student login</a>
+    <header>
+        <nav>
+            <div class="nav-left">SolveIt</div>
+            <div class="nav-right">
+                <a href="{% url 'login-user' %}">Login</a>
+                <a href="{% url 'register-user' %}">Register</a>
+                <a href="#">Contact</a>
             </div>
-        </main>
-    </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="about">
+            <h2>About SolveIt</h2>
+            <p>SolveIt is an online platform designed to challenge your coding skills. Participate in contests, practice problems, and compete with programmers worldwide.</p>
+        </section>
+
+        <section class="features">
+            <div class="feature">
+                <h3>Wide Range of Problems</h3>
+                <p>From beginner to expert levels, explore a variety of coding challenges.</p>
+            </div>
+            <div class="feature">
+                <h3>Real-time Leaderboard</h3>
+                <p>Track your progress and see where you stand among your peers.</p>
+            </div>
+            <div class="feature">
+                <h3>Interactive Coding Environment</h3>
+                <p>Submit and test your code directly from the browser.</p>
+            </div>
+        </section>
+
+        <section class="testimonials">
+            <h2>Testimonials</h2>
+            <div class="testimonial">
+                <p>"SolveIt has transformed the way I approach coding challenges. The interface is intuitive and the problems are engaging." - Saai</p>
+            </div>
+            <div class="testimonial">
+                <p>"I love competing on SolveIt. The leaderboard feature keeps me motivated to improve my skills." - Rahul</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 SolveIt. All rights reserved.</p>
+    </footer>
 </body>
 </html>

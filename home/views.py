@@ -18,6 +18,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ValidationError
+from accounts.urls import login_user
 
 
 def logout_user(request):
@@ -27,9 +28,8 @@ def logout_user(request):
 
 @login_required
 
-
-
 def home_page(request):
+    
     user_questions, created = user_questions_solved.objects.get_or_create(solver=request.user)
     
     x=question_details.objects.all()
@@ -60,7 +60,8 @@ def problem_page(request, name):
         'ques_name': problem.name,
         'desc': problem.description,
         'samp_in': problem.sample_input,
-        'samp_out': problem.sample_output
+        'samp_out': problem.sample_output,
+        'constraints': problem.constraints
     }
     return render(request, 'question_view.html', context)
 
@@ -161,40 +162,79 @@ def submit_code(language, code,ques_name,user):
     # with open(input_file_path, "w") as input_file:
     #     input_file.write(cleaned_input_data)
 
+    output_results = []
+    
     if language == "cpp":
         executable_path = codes_dir / unique
         compile_result = subprocess.run(
-            ["g++", str(code_file_path), "-o", str(executable_path)]
+            ["g++", str(code_file_path), "-o", str(executable_path)],
+            capture_output=True, text=True
         )
 
+        # Check if compilation was successful
         if compile_result.returncode == 0:
+            # Read input data and split by blank lines
+            with open(input_file_path, "r") as input_file:
+                input_data_list = input_file.read().strip().split("\n\n")  # Split by double newlines
+
+            # Execute for each input case
+            for input_data_case in input_data_list:
+                # Write the current input case to a temporary file
+                temp_input_file_path = input_dir / f"{unique}_{ques_name}_input.txt"
+                with open(temp_input_file_path, "w") as temp_input_file:
+                    temp_input_file.write(input_data_case)
+
+                # Run the compiled executable
+                with open(output_file_path, "w") as output_file:
+                    subprocess.run(
+                        [str(executable_path)],
+                        stdin=open(temp_input_file_path, "r"),
+                        stdout=output_file
+                    )
+
+                # Read the output and store it
+                with open(output_file_path, "r") as output_file:
+                    output_data = output_file.read()
+                    output_results.append(output_data)
+
+    elif language == "py":
+        # Read input data and split by blank lines
+        with open(input_file_path, "r") as input_file:
+            input_data_list = input_file.read().strip().split("\n\n")  # Split by double newlines
+        print(input_data_list)
+        # Execute for each input case
+        for input_data_case in input_data_list:
+            # Write the current input case to a temporary file
+            temp_input_file_path = input_dir / f"{unique}_input.txt"
+            with open(temp_input_file_path, "w") as temp_input_file:
+                temp_input_file.write(input_data_case)
+
+            # Run the Python code
             with open(output_file_path, "w") as output_file:
                 subprocess.run(
-                    [str(executable_path)],
-                    stdin=open(input_file_path, "r"),
+                    ["python3", str(code_file_path)],
+                    stdin=open(temp_input_file_path, "r"),
                     stdout=output_file
                 )
 
-    elif language == "py":
-        with open(input_file_path, "r") as input_file:
-            input_data = input_file.read()
-        print(input_data)
-        with open(output_file_path, "w") as output_file:
-            subprocess.run(
-                ["python3", str(code_file_path)],
-                stdin=open(input_file_path, "r"),
-                stdout=output_file
-            )
+            # Read the output and store it
+            with open(output_file_path, "r") as output_file:
+                output_data = output_file.read().strip()
+                output_results.append(output_data)
 
-    # Read the output from the output file
-    with open(output_file_path, "r") as output_file:
-        output_data = output_file.read()
-    
-    with open(output_file_path_test_case,"r") as output_file_2:
-        output_data_test_case = output_file_2.read()
-    
-    is_correct = (output_data == output_data_test_case)
 
+    # Check correctness for each case if expected output files are present
+    
+    is_correct=True
+    count=0
+    if output_file_path_test_case.exists():
+        with open(output_file_path_test_case, "r") as expected_output_file:
+            expected_outputs = expected_output_file.read().strip().split("\n\n")  # Assuming expected outputs are also separated by blank lines
+        
+        for output_data, expected_output in zip(output_results, expected_outputs):
+            output_check = (output_data.strip() == expected_output.strip())
+            is_correct=is_correct and output_check
+            count=count+1
     # Save the submission details to the database
     
     if(is_correct):
@@ -215,7 +255,7 @@ def submit_code(language, code,ques_name,user):
         return is_correct
 
     # return output_data
-    return "code not correct"
+    return f"code not correct at {count} test case"
 
 
 def run_code(language, code, input_data):

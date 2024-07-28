@@ -72,6 +72,8 @@ def login_user(request):
   return HttpResponse(template.render(context,request))
 
 def home_page(request):
+  
+  
   template = loader.get_template('home_page.html')
   context = {}
   return HttpResponse(template.render(context, request))

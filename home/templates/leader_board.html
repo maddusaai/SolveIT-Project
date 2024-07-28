@@ -1,25 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaderboard</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+            max-width: 800px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: #1a73e8;
+            color: white;
+            text-align: center;
+            font-size: 1.5em;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #1a73e8;
+            color: white;
+            cursor: pointer;
+        }
+
+        th, td {
+            text-align: center;
+            padding: 10px;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .pagination {
+            justify-content: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>Leaderboard</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Problems Solved</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for entry in leaderboard_data %}
-                <tr>
-                    <td>{{ entry.username }}</td>
-                    <td>{{ entry.solved_count }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>Leaderboard</h1>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable(0)">Username <span>&#x21C5;</span></th>
+                            <th onclick="sortTable(1)">Problems Solved <span>&#x21C5;</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in leaderboard_data %}
+                            <tr>
+                                <td>{{ entry.username }}</td>
+                                <td>{{ entry.solved_count }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Pagination controls -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+    <script>
+        function sortTable(columnIndex) {
+            const table = document.querySelector('table tbody');
+            const rows = Array.from(table.rows);
+
+            const sortedRows = rows.sort((a, b) => {
+                const aText = a.cells[columnIndex].textContent.trim();
+                const bText = b.cells[columnIndex].textContent.trim();
+                return columnIndex === 1 ? bText - aText : aText.localeCompare(bText);
+            });
+
+            table.innerHTML = '';
+            sortedRows.forEach(row => table.appendChild(row));
+        }
+    </script>
 </body>
 </html>

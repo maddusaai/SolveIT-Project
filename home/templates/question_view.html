@@ -5,10 +5,10 @@
     <title>Question Page</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
+            background-color: #eef2f7;
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -16,23 +16,27 @@
             overflow: hidden;
         }
         .container {
-            width: 100%;
-            height: 100%;
+            width: 90%;
+            height: 90%;
             background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
+            border-radius: 10px;
+            overflow: hidden;
         }
         .header {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            padding: 10px;
-            background-color: #176ca5;
+            padding: 15px;
+            background-color: #d41717;
             color: white;
         }
         .header h1 {
             margin: 0;
-            font-size: 24px;
+            font-size: 28px;
+            letter-spacing: 1px;
         }
         .content {
             display: flex;
@@ -44,39 +48,37 @@
             box-sizing: border-box;
             height: 100%;
             overflow-y: auto;
+            transition: all 0.3s ease;
         }
         .left-column {
-            flex: 1;
+            flex: 2;
             border-right: 1px solid #ddd;
         }
         .right-column {
-            flex: 1;
+            flex: 1.5;
+            background-color: #f9fafb;
         }
         .resizer {
-            width: 10px;
+            width: 5px;
             cursor: ew-resize;
             background-color: #ddd;
             border-left: 1px solid #ccc;
             border-right: 1px solid #ccc;
         }
-        h1, h2 {
-            color: #333;
+        h2 {
+            color: #ce1414;
+            margin-bottom: 10px;
         }
         .section {
             margin-bottom: 20px;
         }
-        .section h2 {
-            color: #176ca5;
-            border-bottom: 2px solid #176ca5;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-        }
         .section p, .section pre {
-            background: #f9f9f9;
-            padding: 10px;
+            background: #fff;
+            padding: 15px;
             border: 1px solid #ddd;
             border-radius: 5px;
             white-space: pre-wrap;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .form-control {
             width: 100%;
@@ -89,16 +91,18 @@
             width: 100%;
             height: 300px;
             padding: 10px;
-            font-family: monospace;
+            font-family: 'Courier New', Courier, monospace;
             font-size: 14px;
             border: 1px solid #ddd;
             border-radius: 5px;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .run-button, .submit-button {
             display: inline-block;
             width: 48%;
-            padding: 10px;
-            background-color: #176ca5;
+            padding: 12px;
+            background-color: #db1111;
             color: white;
             border: none;
             border-radius: 5px;
@@ -106,22 +110,24 @@
             cursor: pointer;
             margin-top: 10px;
             text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
         }
         .run-button {
-            background-color: #28a745;
+            background-color: #c81919;
         }
         .run-button:hover {
             background-color: #218838;
         }
         .submit-button:hover {
-            background-color: #145b8a;
+            background-color: #15db64;
         }
         .form-group {
             margin-bottom: 20px;
         }
         .form-group label {
             font-weight: bold;
-            color: #176ca5;
+            color: #d9161d;
         }
         .form-group div {
             margin-bottom: 10px;
@@ -133,6 +139,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 14px;
+            background-color: #f9fafb;
         }
     </style>
 </head>
@@ -147,19 +154,27 @@
                 <div class="section">
                     <h2>Description</h2>
                     <p id="description">
-                        {{ desc|linebreaks }}
+                        {{desc}}
                     </p>
                 </div>
+
+                <div class="section">
+                    <h2>Constraints</h2>
+                    <p id="constraints">
+                        {{constraints}}
+                    </p>
+                </div>
+
                 <div class="section">
                     <h2>Sample Input</h2>
                     <pre id="sample-input">
-                        {{ samp_in|linebreaks }}
+                        {{ samp_in }}
                     </pre>
                 </div>
                 <div class="section">
                     <h2>Sample Output</h2>
                     <pre id="sample-output">
-                        {{ samp_out|linebreaks }}
+                        {{ samp_out }}
                     </pre>
                 </div>
             </div>

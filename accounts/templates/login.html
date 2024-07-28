@@ -1,78 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
-    <link
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <title>Login - SolveIT</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
     <style>
-      body {
-        background-color: #a1c0db; 
-      }
+        body {
+            background: url('https://via.placeholder.com/1500') no-repeat center center fixed; /* Background image */
+            background-size: cover;
+            font-family: 'Arial', sans-serif;
+        }
+        .login-container {
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-in-out;
+        }
+        .login-container h1 {
+            text-align: center;
+            color: #cc111e;
+            margin-bottom: 20px;
+        }
+        .login-container h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .login-container .form-group label {
+            font-weight: bold;
+            color: #555;
+        }
+        .login-container .form-group input {
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        .login-container .form-group button {
+            background-color: #cc111e; /* Button color */
+            border: none;
+            color: white;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+        }
+        .login-container .form-group button:hover {
+            background-color: #a10e15; /* Darker red for hover effect */
+        }
+        .login-container .alert {
+            margin-top: 20px;
+        }
+        .login-container p {
+            text-align: center;
+        }
+        .login-container p a {
+            color: #176ca5;
+            text-decoration: none;
+        }
+        .login-container p a:hover {
+            text-decoration: underline;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
-  </head>
-  <body>
-    <div class="container mt-5">
-      <!-- Login form -->
-      <form
-        class="col-6 mx-auto card p-3 shadow-lg"
-        method="post"
-        enctype="multipart/form-data"
-      >
-        <h1 style="text-align: center">
-          <span style="color: green">SolveIT</span>
-        </h1>
+</head>
+<body>
+    <div class="login-container">
+        <h1>SolveIT</h1>
+        <form method="post">
+            {% csrf_token %}
+            <!-- Display error/success messages -->
+            {% if messages %}
+            <div class="alert alert-danger" role="alert">
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <!-- Login heading -->
+            <h3>Login</h3>
+            <hr />
 
-        {% csrf_token %}
-        <!-- CSRF token for security -->
+            <!-- Username input field -->
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" name="username" id="username" placeholder="Enter username" required />
+            </div>
 
-        <!-- Login heading -->
-        <h3>Login</h3>
-        <hr />
+            <!-- Password input field -->
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="Password" required />
+            </div>
 
-        <!-- Display error/success messages -->
-        {% if messages %}
-        <div class="alert alert-primary" role="alert">
-          {% for message in messages %} {{ message }} {% endfor %}
-        </div>
-        {% endif %}
+            <!-- Link to registration page -->
+            <p>Don't have an account? <a href="{% url 'register-user' %}">Register</a></p>
 
-        <!-- Username input field -->
-        <div class="form-group">
-          <label for="exampleInputEmail1">Username</label>
-          <input
-            type="text"
-            class="form-control"
-            name="username"
-            id="exampleInputEmail1"
-            aria-describedby="emailHelp"
-            placeholder="Enter username"
-            required
-          />
-        </div>
-
-        <!-- Password input field -->
-        <div class="form-group">
-          <label for="exampleInputPassword1">Password</label>
-          <input
-            type="password"
-            name="password"
-            class="form-control"
-            id="exampleInputPassword1"
-            placeholder="Password"
-            required
-          />
-        </div>
-
-        <!-- Link to registration page -->
-        <p>Don't have an account <a href="/register/">Register</a></p>
-
-        <!-- Submit button -->
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
+            <!-- Submit button -->
+            <button type="submit">Login</button>
+        </form>
     </div>
-  </body>
+</body>
 </html>
