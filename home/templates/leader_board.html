@@ -7,7 +7,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #f8d7da; /* Light red background */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
@@ -19,12 +19,12 @@
         .card {
             border: none;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.2); /* Red shadow */
             overflow: hidden;
         }
 
         .card-header {
-            background-color: #1a73e8;
+            background-color: #dc3545; /* Red header background */
             color: white;
             text-align: center;
             font-size: 1.5em;
@@ -32,7 +32,7 @@
         }
 
         th {
-            background-color: #1a73e8;
+            background-color: #dc3545; /* Red table header background */
             color: white;
             cursor: pointer;
         }
@@ -43,11 +43,20 @@
         }
 
         tr:hover {
-            background-color: #f1f1f1;
+            background-color: #f5c6cb; /* Light red hover effect */
         }
 
         .pagination {
             justify-content: center;
+        }
+
+        .page-link {
+            color: #dc3545; /* Red text color for pagination */
+        }
+
+        .page-item.active .page-link {
+            background-color: #dc3545; /* Red background for active page */
+            border-color: #dc3545;
         }
     </style>
 </head>

@@ -1,0 +1,1 @@
+Enter the number of disks: Move disk 1 from A to C

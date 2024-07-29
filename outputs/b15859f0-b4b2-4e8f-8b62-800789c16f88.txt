@@ -1,0 +1,1 @@
+Enter the first string: Enter the second string: 4
