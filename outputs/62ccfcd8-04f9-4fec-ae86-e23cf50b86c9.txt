@@ -1,0 +1,1 @@
+Enter the string s: Enter the words separated by space: Starting indices: [1, 10]

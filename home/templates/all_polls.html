@@ -161,7 +161,7 @@
     <div class="logo">SolveIt</div>
     <div class="nav-links">
         <a href="/leaderboard">Leaderboard</a>
-        <a href="#">Profile</a>
+        <a href="/profile">Profile</a>
         <a href="/logout">Logout</a>
     </div>
 </div>
@@ -170,14 +170,13 @@
 <div class="dashboard-and-welcome">
     <!-- Welcome Message -->
     <div class="welcome-message">
-        <h1>Welcome {{user.username}}</h1>
-        <p>Explore contests, solve problems, and compete on the leaderboard.</p>
+        <h1>Welcome {{ user.username }}</h1>
     </div>
 
     <!-- Dashboard Section -->
     <div class="dashboard">
         <h2>Problems Solved</h2>
-        <p id="problems-count">{{nops}}</p>
+        <p id="problems-count">{{ nops }}</p>
     </div>
 </div>
 
@@ -188,6 +187,7 @@
             <tr>
                 <th>Problem Name</th>
                 <th>Difficulty</th>
+                <th>Status</th> <!-- New Status Column -->
             </tr>
         </thead>
         <tbody>
@@ -195,6 +195,7 @@
                 <tr>
                     <td><a href="{% url 'problem_page' item.name %}">{{ item.name }}</a></td>
                     <td>{{ item.difficulty }}</td>
+                    <td>{{ item.status }}</td> <!-- Use the status directly -->
                 </tr>
             {% endfor %}
         </tbody>

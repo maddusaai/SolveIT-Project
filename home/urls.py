@@ -1,5 +1,5 @@
 from django.urls import path,include
-from home.views import logout_user,home_page,problem_page,leaderboard,submit,run
+from home.views import logout_user,home_page,problem_page,leaderboard,submit,run,profile
 
 urlpatterns = [
   path("logout/",logout_user,name = "logout_user"),
@@ -7,5 +7,6 @@ urlpatterns = [
   path("problem/<str:name>/",problem_page,name="problem_page"),
   path("leaderboard/",leaderboard,name="leader_board"),
   path("submit/<str:ques_name>/", submit, name="submit_code"),
-  path("run/", run, name="run_code")
+  path("run/", run, name="run_code"),
+  path('profile/', profile, name='edit_profile')
 ]

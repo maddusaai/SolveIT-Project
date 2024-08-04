@@ -7,7 +7,6 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from .models import user_questions_solved,question_details,user_question_details,user_code_sub
 from django.contrib.auth.models import User
-from home.forms import CodeSubmissionForm
 from django.conf import settings
 from pathlib import Path
 import os
@@ -19,6 +18,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ValidationError
 from accounts.urls import login_user
+from home.forms import CodeSubmissionForm
 
 
 def logout_user(request):
@@ -29,14 +29,29 @@ def logout_user(request):
 @login_required
 
 def home_page(request):
-    
     user_questions, created = user_questions_solved.objects.get_or_create(solver=request.user)
     
-    x=question_details.objects.all()
+    # Get all questions
+    all_questions = question_details.objects.all()
+    
+    # Get the user's solved questions
+    solved_questions = user_question_details.objects.filter(user=request.user, solved=True).values_list('problem', flat=True)
+    
+    # Prepare the data with status
+    data_with_status = []
+    for question in all_questions:
+        status = 'Solved' if question.id in solved_questions else 'Not Solved'
+        data_with_status.append({
+            'name': question.name,
+            'difficulty': question.difficulty,
+            'status': status,
+        })
+    
     context = {
         'nops': user_questions.no_of_questions,
-        'data_from_another_model':x
+        'data_from_another_model': data_with_status,
     }
+    
     return render(request, 'all_polls.html', context)
 
 @login_required
@@ -121,34 +136,31 @@ def submit(request,ques_name):
 
 
         
-def submit_code(language, code,ques_name,user):
+def submit_code(language, code, ques_name, user):
     project_path = Path(settings.BASE_DIR)
     directories = ["codes", "inputs", "outputs"]
-    # input_lines = input_data.strip().split('\n')
-    # cleaned_input_data = '\n'.join(line.strip() for line in input_lines)
 
     question_instance = question_details.objects.get(name=ques_name)
     existing_submission = user_code_sub.objects.filter(user=user, question=question_instance).exists()
     if existing_submission:
-        return "already submitted" 
-    
+        return "already submitted"
+
     for directory in directories:
         dir_path = project_path / directory
         if not dir_path.exists():
             dir_path.mkdir(parents=True, exist_ok=True)
-    
+
     codes_dir = project_path / "codes"
     input_dir = project_path / "inputs"
     output_dir = project_path / "outputs"
 
     unique = str(uuid.uuid4())
-    
 
     code_file_name = f"{unique}.{language}"
     input_file_name = f"{ques_name}_input.txt"
     output_file_name = f"{unique}.txt"
     output_file_test_case = f"{ques_name}_output.txt"
-    
+
     code_file_path = codes_dir / code_file_name
     input_file_path = input_dir / input_file_name
     output_file_path = output_dir / output_file_name
@@ -158,33 +170,25 @@ def submit_code(language, code,ques_name,user):
     with open(code_file_path, "w") as code_file:
         code_file.write(code)
 
-    #Write input data to file
-    # with open(input_file_path, "w") as input_file:
-    #     input_file.write(cleaned_input_data)
-
     output_results = []
-    
-    if language == "cpp":
+
+    if language == "cpp" or language == "c":
         executable_path = codes_dir / unique
+        compiler = "gcc" if language == "c" else "g++"
         compile_result = subprocess.run(
-            ["g++", str(code_file_path), "-o", str(executable_path)],
+            [compiler, str(code_file_path), "-o", str(executable_path)],
             capture_output=True, text=True
         )
 
-        # Check if compilation was successful
         if compile_result.returncode == 0:
-            # Read input data and split by blank lines
             with open(input_file_path, "r") as input_file:
-                input_data_list = input_file.read().strip().split("\n\n")  # Split by double newlines
+                input_data_list = input_file.read().strip().split("\n\n")
 
-            # Execute for each input case
             for input_data_case in input_data_list:
-                # Write the current input case to a temporary file
                 temp_input_file_path = input_dir / f"{unique}_{ques_name}_input.txt"
                 with open(temp_input_file_path, "w") as temp_input_file:
                     temp_input_file.write(input_data_case)
 
-                # Run the compiled executable
                 with open(output_file_path, "w") as output_file:
                     subprocess.run(
                         [str(executable_path)],
@@ -192,24 +196,19 @@ def submit_code(language, code,ques_name,user):
                         stdout=output_file
                     )
 
-                # Read the output and store it
                 with open(output_file_path, "r") as output_file:
                     output_data = output_file.read()
                     output_results.append(output_data)
 
     elif language == "py":
-        # Read input data and split by blank lines
         with open(input_file_path, "r") as input_file:
-            input_data_list = input_file.read().strip().split("\n\n")  # Split by double newlines
-        print(input_data_list)
-        # Execute for each input case
+            input_data_list = input_file.read().strip().split("\n\n")
+
         for input_data_case in input_data_list:
-            # Write the current input case to a temporary file
             temp_input_file_path = input_dir / f"{unique}_input.txt"
             with open(temp_input_file_path, "w") as temp_input_file:
                 temp_input_file.write(input_data_case)
 
-            # Run the Python code
             with open(output_file_path, "w") as output_file:
                 subprocess.run(
                     ["python3", str(code_file_path)],
@@ -217,27 +216,22 @@ def submit_code(language, code,ques_name,user):
                     stdout=output_file
                 )
 
-            # Read the output and store it
             with open(output_file_path, "r") as output_file:
                 output_data = output_file.read().strip()
                 output_results.append(output_data)
 
-
-    # Check correctness for each case if expected output files are present
-    
-    is_correct=True
-    count=0
+    is_correct = True
+    count = 0
     if output_file_path_test_case.exists():
         with open(output_file_path_test_case, "r") as expected_output_file:
-            expected_outputs = expected_output_file.read().strip().split("\n\n")  # Assuming expected outputs are also separated by blank lines
-        
+            expected_outputs = expected_output_file.read().strip().split("\n\n")
+
         for output_data, expected_output in zip(output_results, expected_outputs):
             output_check = (output_data.strip() == expected_output.strip())
-            is_correct=is_correct and output_check
-            count=count+1
-    # Save the submission details to the database
-    
-    if(is_correct):
+            is_correct = is_correct and output_check
+            count += 1
+
+    if is_correct:
         user_code_sub.objects.create(
             language=language,
             code=code,
@@ -249,12 +243,11 @@ def submit_code(language, code,ques_name,user):
             user=user,
             solved=True
         )
-        lb=user_questions_solved.objects.filter(solver=user).first()
-        lb.no_of_questions=lb.no_of_questions+1
+        lb = user_questions_solved.objects.filter(solver=user).first()
+        lb.no_of_questions += 1
         lb.save()
         return is_correct
 
-    # return output_data
     return f"code not correct at {count} test case"
 
 
@@ -268,7 +261,7 @@ def run_code(language, code, input_data):
         dir_path = project_path / directory
         if not dir_path.exists():
             dir_path.mkdir(parents=True, exist_ok=True)
-    
+
     codes_dir = project_path / "codes"
     input_dir = project_path / "inputs"
     output_dir = project_path / "outputs"
@@ -282,20 +275,19 @@ def run_code(language, code, input_data):
     input_file_path = input_dir / input_file_name
     output_file_path = output_dir / output_file_name
 
-    
-
     # Write code to file
     with open(code_file_path, "w") as code_file:
         code_file.write(code)
 
-    #Write input data to file
+    # Write input data to file
     with open(input_file_path, "w") as input_file:
-         input_file.write(cleaned_input_data)
+        input_file.write(cleaned_input_data)
 
-    if language == "cpp":
+    if language == "cpp" or language == "c":
         executable_path = codes_dir / unique
+        compiler = "gcc" if language == "c" else "g++"
         compile_result = subprocess.run(
-            ["g++", str(code_file_path), "-o", str(executable_path)]
+            [compiler, str(code_file_path), "-o", str(executable_path)]
         )
 
         if compile_result.returncode == 0:
@@ -305,17 +297,35 @@ def run_code(language, code, input_data):
                     stdin=open(input_file_path, "r"),
                     stdout=output_file
                 )
- 
+
     elif language == "py":
-        
         with open(output_file_path, "w") as output_file:
             subprocess.run(
                 ["python3", str(code_file_path)],
                 stdin=open(input_file_path, "r"),
                 stdout=output_file
             )
-    
+
     with open(output_file_path, "r") as output_file:
         output_data = output_file.read()
 
     return output_data
+
+@login_required
+def profile(request):
+    user = request.user
+    submissions = user_question_details.objects.filter(user=user)
+    solved_problems = user_question_details.objects.filter(user=user, solved=True)
+    # Calculate total solved questions and accuracy
+    total_solved_questions = submissions.filter(solved=True).count()
+    total_attempts = submissions.count()
+    accuracy = (total_solved_questions / total_attempts * 100) if total_attempts > 0 else 0
+
+    context = {
+        'user': user,
+        'total_solved_questions': total_solved_questions,
+        'accuracy': accuracy,
+        'submissions': submissions,
+        'probs': solved_problems
+    }
+    return render(request, 'profile.html', context)
